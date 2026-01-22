@@ -38,8 +38,6 @@ You would also need to know how PHP works. You need to know OOP to get the most 
 
 ## Installation
 
-You will use [this repository](https://github.com/deozza/php-framework/), at the branch `step-10-lib` as a base.
-
 In order to install the project, click on this button on the page to fork it :
 
 ![fork button](assets/fork.png)
@@ -50,11 +48,9 @@ Then execute the following commands :
 
 ```bash
 
-git clone https://github.com/<your-username>/php-framework
+git clone https://github.com/<your-username>/php-oop-course-controle-1-DECODE-RD-2026
 
-cd php-framework
-
-git checkout step-10-lib
+cd php-oop-course-controle-1-DECODE-RD-2026/php-framework
 
 docker compose up -d --build
 
