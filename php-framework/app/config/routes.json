@@ -18,5 +18,10 @@
     "path": "/contact/{email}",
     "method": "GET",
     "controller": "GetContactController"
+  },
+  {
+    "path": "/contact/{email}",
+    "method": "PATCH",
+    "controller": "UpdateContactController"
   }
 ]
