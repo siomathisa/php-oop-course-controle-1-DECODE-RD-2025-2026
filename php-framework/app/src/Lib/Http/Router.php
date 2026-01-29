@@ -15,9 +15,17 @@ class Router {
         $config = self::getConfig();
 
         foreach($config as $route) {
-            if(self::checkMethod($request, $route) === false || self::checkUri($request, $route) === false) {
+            if(self::checkMethod($request, $route) === false) {
                 continue;
             }
+            
+            $pathParams = self::checkUri($request, $route);
+            if($pathParams === false) {
+                continue;
+            }
+            
+            // Stocker les paramètres du path dans la requête
+            $request->setPathParams($pathParams);
 
             $controller = self::getControllerInstance($route['controller']);
             return $controller->process($request);
@@ -38,8 +46,33 @@ class Router {
         return $request->getMethod() === $route['method'];
     }
 
-    private static function checkUri(Request $request, array $route): bool {
-        return $request->getUri() === $route['path'];
+    private static function checkUri(Request $request, array $route): array|false {
+        // Nettoyer l'URI de la requête (enlever les query params)
+        $requestUri = parse_url($request->getUri(), PHP_URL_PATH);
+        $routePath = $route['path'];
+        
+        // Si pas de paramètres dans la route, comparaison simple
+        if (strpos($routePath, '{') === false) {
+            return $requestUri === $routePath ? [] : false;
+        }
+        
+        // Convertir le pattern de route en regex
+        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $routePath);
+        $pattern = '#^' . $pattern . '$#';
+        
+        // Tester si l'URI correspond au pattern
+        if (preg_match($pattern, $requestUri, $matches)) {
+            // Extraire seulement les paramètres nommés
+            $params = [];
+            foreach ($matches as $key => $value) {
+                if (is_string($key)) {
+                    $params[$key] = $value;
+                }
+            }
+            return $params;
+        }
+        
+        return false;
     }
     
     private static function getControllerInstance(string $controller): AbstractController {

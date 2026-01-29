@@ -8,6 +8,7 @@ class Request
     private string $method;
     private array $headers;
     private ?string $body = null;
+    private array $pathParams = [];
 
     public function __construct()
     {
@@ -54,5 +55,20 @@ class Request
     public function checkMethod(string $method): bool
     {
         return $this->method === $method;
+    }
+
+    public function setPathParams(array $params): void
+    {
+        $this->pathParams = $params;
+    }
+
+    public function getPathParams(): array
+    {
+        return $this->pathParams;
+    }
+
+    public function getPathParam(string $key): ?string
+    {
+        return $this->pathParams[$key] ?? null;
     }
 }
